@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pedido Confirmado - Las Delicias de Sarita</title>
+    <link href="/static/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="/">🍰 Las Delicias de Sarita</a>
+        </div>
+    </nav>
+
+    <div class="container my-5 text-center">
+        <div class="card shadow mx-auto" style="max-width: 500px;">
+            <div class="card-body py-5">
+                <div style="font-size: 4rem">✅</div>
+                <h2 class="mt-3">¡Pedido Confirmado!</h2>
+                {% if pedido %}
+                <p class="text-muted">Gracias, <strong>{{ pedido.nombre }}</strong>. Tu pedido por <strong>${{ "{:,.0f}".format(pedido.total) }}</strong> ha sido registrado.</p>
+                {% endif %}
+                <p class="text-muted">Nos pondremos en contacto contigo pronto. 🍬</p>
+                <a href="/" class="btn btn-warning mt-3">Volver a la tienda</a>
+            </div>
+        </div>
+    </div>
+
+    <script src="/static/bootstrap.bundle.min.js"></script>
+</body>
+</html>

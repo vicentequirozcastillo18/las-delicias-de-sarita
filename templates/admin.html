@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Pedidos - Las Delicias de Sarita</title>
+    <link href="/static/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="/">🍰 Las Delicias de Sarita</a>
+            <span class="navbar-text text-white">Panel de Pedidos</span>
+        </div>
+    </nav>
+
+    <div class="container my-5">
+        <h2 class="mb-4">📋 Pedidos Registrados</h2>
+
+        {% if pedidos %}
+        <div class="table-responsive">
+            <table class="table table-bordered table-hover bg-white shadow-sm">
+                <thead class="table-dark">
+                    <tr>
+                        <th>#</th>
+                        <th>Fecha</th>
+                        <th>Cliente</th>
+                        <th>Teléfono</th>
+                        <th>Detalle</th>
+                        <th>Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for pedido in pedidos %}
+                    <tr>
+                        <td>{{ pedido['id'] }}</td>
+                        <td>{{ pedido['fecha'] }}</td>
+                        <td>{{ pedido['nombre'] }}</td>
+                        <td>{{ pedido['telefono'] }}</td>
+                        <td>
+                            {% set detalle = pedido['detalle'] | tojson %}
+                            {% set items = pedido['detalle'] %}
+                            {{ items }}
+                        </td>
+                        <td><strong>${{ "{:,.0f}".format(pedido['total']) }}</strong></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="alert alert-info">Aún no hay pedidos registrados.</div>
+        {% endif %}
+
+        <a href="/" class="btn btn-secondary mt-3">← Volver a la tienda</a>
+    </div>
+
+    <script src="/static/bootstrap.bundle.min.js"></script>
+</body>
+</html>

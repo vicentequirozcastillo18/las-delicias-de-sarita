@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Las Delicias de Sarita</title>
+    <link href="/static/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --rosa:       #f48fb1;
+            --rosa-claro: #fce4ec;
+            --rosa-hover: #f06292;
+            --rojo:       #e53935;
+            --rojo-hover: #c62828;
+            --crema:      #fff8f8;
+            --texto:      #4a1428;
+            --gris:       #9e9e9e;
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            background-color: var(--crema);
+            font-family: 'Lato', sans-serif;
+            color: var(--texto);
+        }
+
+        /* NAVBAR */
+        .navbar-sarita {
+            background: linear-gradient(135deg, var(--rojo) 0%, #e91e63 100%);
+            padding: 1rem 0;
+            box-shadow: 0 2px 12px rgba(229,57,53,0.3);
+        }
+        .navbar-sarita .navbar-brand {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.6rem;
+            font-weight: 900;
+            color: #fff !important;
+            letter-spacing: 1px;
+        }
+        .navbar-sarita .navbar-brand span {
+            color: #ffe0ec;
+        }
+
+        /* HERO */
+        .hero {
+            background: linear-gradient(135deg, #fce4ec 0%, #fff0f5 60%, #ffe0ec 100%);
+            border-bottom: 3px solid var(--rosa);
+            padding: 3rem 0 2rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        .hero::before {
+            content: '🍰';
+            font-size: 8rem;
+            position: absolute;
+            top: -20px;
+            right: 5%;
+            opacity: 0.12;
+        }
+        .hero h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.8rem;
+            font-weight: 900;
+            color: var(--rojo);
+            margin-bottom: 0.3rem;
+        }
+        .hero p {
+            font-size: 1.1rem;
+            color: #ad1457;
+            font-weight: 300;
+            letter-spacing: 1px;
+        }
+
+        /* TARJETAS DE PRODUCTO */
+        .product-card {
+            border: none;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(244,143,177,0.25);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            background: #fff;
+        }
+        .product-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 10px 30px rgba(229,57,53,0.2);
+        }
+        .product-card img {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+        }
+        .product-card .card-body {
+            padding: 1.2rem;
+        }
+        .product-card .card-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--texto);
+            margin-bottom: 0.3rem;
+        }
+        .product-card .precio-badge {
+            background: linear-gradient(135deg, var(--rojo), #e91e63);
+            color: #fff;
+            padding: 0.3rem 0.9rem;
+            border-radius: 20px;
+            font-size: 0.95rem;
+            font-weight: 700;
+            display: inline-block;
+            margin-bottom: 0.8rem;
+        }
+        .btn-agregar {
+            background: linear-gradient(135deg, var(--rosa), var(--rosa-hover));
+            color: #fff;
+            border: none;
+            border-radius: 30px;
+            padding: 0.45rem 1.2rem;
+            font-weight: 700;
+            width: 100%;
+            transition: background 0.2s;
+            text-decoration: none;
+            display: block;
+            text-align: center;
+        }
+        .btn-agregar:hover {
+            background: linear-gradient(135deg, var(--rojo), var(--rojo-hover));
+            color: #fff;
+        }
+
+        /* PANEL LATERAL */
+        .panel-card {
+            border: none;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(244,143,177,0.2);
+            margin-bottom: 1.5rem;
+            background: #fff;
+        }
+        .panel-header {
+            padding: 0.9rem 1.2rem;
+            font-family: 'Playfair Display', serif;
+            font-weight: 700;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .panel-header.rosa   { background: linear-gradient(135deg, var(--rosa), #f06292); color: #fff; }
+        .panel-header.rojo   { background: linear-gradient(135deg, var(--rojo), #e91e63); color: #fff; }
+        .panel-header.verde  { background: linear-gradient(135deg, #43a047, #66bb6a); color: #fff; }
+
+        /* INPUTS */
+        .form-control:focus, .form-select:focus {
+            border-color: var(--rosa);
+            box-shadow: 0 0 0 0.2rem rgba(244,143,177,0.3);
+        }
+        .form-label { font-weight: 700; font-size: 0.88rem; color: var(--texto); }
+
+        /* BOTÓN CONFIRMAR */
+        .btn-confirmar {
+            background: linear-gradient(135deg, var(--rojo), #e91e63);
+            color: #fff;
+            border: none;
+            border-radius: 30px;
+            padding: 0.6rem 1.5rem;
+            font-weight: 700;
+            width: 100%;
+            font-size: 1rem;
+            transition: opacity 0.2s;
+        }
+        .btn-confirmar:hover { opacity: 0.9; color: #fff; }
+
+        /* ALERTA CARRITO VACÍO */
+        .alerta-vacio {
+            background: var(--rosa-claro);
+            border: 1.5px dashed var(--rosa);
+            border-radius: 16px;
+            padding: 1.2rem;
+            color: #ad1457;
+            font-size: 0.95rem;
+            text-align: center;
+        }
+
+        /* TÍTULO SECCIÓN */
+        .seccion-titulo {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.8rem;
+            font-weight: 900;
+            color: var(--rojo);
+            margin-bottom: 0.2rem;
+        }
+
+        /* ITEM CARRITO */
+        .carrito-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 0.6rem;
+            gap: 0.5rem;
+        }
+        .carrito-item span { font-size: 0.92rem; font-weight: 600; }
+        .btn-vaciar {
+            background: transparent;
+            border: 1.5px solid var(--rojo);
+            color: var(--rojo);
+            border-radius: 20px;
+            font-size: 0.82rem;
+            padding: 0.3rem 0.9rem;
+            width: 100%;
+            margin-top: 0.5rem;
+            transition: all 0.2s;
+            text-decoration: none;
+            display: block;
+            text-align: center;
+        }
+        .btn-vaciar:hover { background: var(--rojo); color: #fff; }
+
+        .total-row {
+            display: flex;
+            justify-content: space-between;
+            font-weight: 700;
+            font-size: 1rem;
+            border-top: 2px dashed var(--rosa);
+            padding-top: 0.6rem;
+            margin-top: 0.5rem;
+            color: var(--rojo);
+        }
+
+        footer {
+            background: linear-gradient(135deg, var(--rojo), #e91e63);
+            color: #ffe0ec;
+            text-align: center;
+            padding: 1.2rem;
+            margin-top: 3rem;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- NAVBAR -->
+    <nav class="navbar navbar-sarita">
+        <div class="container">
+            <a class="navbar-brand" href="#">🍰 Las Delicias de <span>Sarita</span></a>
+        </div>
+    </nav>
+
+    <!-- HERO -->
+    <div class="hero">
+        <div class="container">
+            <h1>Las Delicias de Sarita</h1>
+            <p>✨ Dulces hechos con amor, listos para endulzar tu día ✨</p>
+        </div>
+    </div>
+
+    <div class="container my-5">
+        <div class="row">
+
+            <!-- COLUMNA IZQUIERDA -->
+            <div class="col-md-4 mb-4">
+
+                <!-- Lista rápida de productos -->
+                <div class="panel-card">
+                    <div class="panel-header rosa">🛒 Agregar al carrito</div>
+                    <div class="card-body">
+                        {% for key, producto in productos.items() %}
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <div>
+                                <strong style="font-size:0.95rem">{{ producto.nombre }}</strong><br>
+                                <small style="color:var(--gris)">${{ "{:,.0f}".format(producto.precio) }} c/u</small>
+                            </div>
+                            <a href="/agregar/{{ key }}" class="btn-agregar" style="width:auto; padding: 0.35rem 1rem; font-size:0.85rem">+ Agregar</a>
+                        </div>
+                        {% if not loop.last %}<hr style="border-color:var(--rosa-claro)">{% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <!-- Carrito -->
+                {% if carrito %}
+                <div class="panel-card">
+                    <div class="panel-header rojo">🧺 Tu carrito</div>
+                    <div class="card-body">
+                        {% for key, cantidad in carrito.items() %}
+                        {% if key in productos %}
+                        <form action="/actualizar" method="POST" class="carrito-item">
+                            <input type="hidden" name="producto" value="{{ key }}">
+                            <span>{{ productos[key].nombre }}</span>
+                            <div class="d-flex align-items-center gap-2">
+                                <input type="number" name="cantidad" value="{{ cantidad }}" min="0"
+                                    class="form-control form-control-sm" style="width:60px; border-color:var(--rosa)">
+                                <button type="submit" class="btn btn-sm"
+                                    style="background:var(--rosa);color:#fff;border-radius:50%;width:28px;height:28px;padding:0">✔</button>
+                            </div>
+                        </form>
+                        {% endif %}
+                        {% endfor %}
+                        <div class="total-row">
+                            <span>Total</span>
+                            <span>${{ "{:,.0f}".format(total) }}</span>
+                        </div>
+                        <a href="/vaciar" class="btn-vaciar">🗑 Vaciar carrito</a>
+                    </div>
+                </div>
+
+                <!-- Formulario -->
+                <div class="panel-card">
+                    <div class="panel-header verde">📋 Confirmar pedido</div>
+                    <div class="card-body">
+                        <form action="/confirmar" method="POST">
+                            <div class="mb-3">
+                                <label class="form-label">Nombre completo</label>
+                                <input type="text" name="nombre" class="form-control" placeholder="Tu nombre" required>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Teléfono</label>
+                                <input type="tel" name="telefono" class="form-control" placeholder="+569..." required>
+                            </div>
+                            <button type="submit" class="btn-confirmar">🍬 Realizar Pedido</button>
+                        </form>
+                    </div>
+                </div>
+
+                {% else %}
+                <div class="alerta-vacio">
+                    🛒 Tu carrito está vacío.<br>¡Agrega algo rico para comenzar!
+                </div>
+                {% endif %}
+
+            </div>
+
+            <!-- COLUMNA DERECHA: PRODUCTOS -->
+            <div class="col-md-8">
+                <p class="seccion-titulo">Nuestros Productos</p>
+                <p style="color:var(--gris); margin-bottom:1.5rem">Elaborados artesanalmente cada día 🎀</p>
+
+                <div class="row row-cols-1 row-cols-md-3 g-4">
+
+                    <div class="col">
+                        <div class="product-card">
+                            <img src="/static/palmeritas.jpeg" alt="Palmeritas">
+                            <div class="card-body">
+                                <h5 class="card-title">Palmeritas 🌿</h5>
+                                <p style="font-size:0.88rem; color:var(--gris)">Crujientes y caramelizadas, irresistibles con el café.</p>
+                                <div class="precio-badge">$1.000 c/u</div>
+                                <a href="/agregar/palmeritas" class="btn-agregar">+ Agregar al carrito</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col">
+                        <div class="product-card">
+                            <img src="/static/alfajor_maicena.jpg" alt="Alfajores">
+                            <div class="card-body">
+                                <h5 class="card-title">Alfajores 🍪</h5>
+                                <p style="font-size:0.88rem; color:var(--gris)">Rellenos de manjar, cubiertos de coco rallado.</p>
+                                <div class="precio-badge">$1.100 c/u</div>
+                                <a href="/agregar/alfajores" class="btn-agregar">+ Agregar al carrito</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col">
+                        <div class="product-card">
+                            <img src="/static/trufas.jpg" alt="Trufas">
+                            <div class="card-body">
+                                <h5 class="card-title">Trufas 🍫</h5>
+                                <p style="font-size:0.88rem; color:var(--gris)">Intensas, cremosas y bañadas en chocolate fino.</p>
+                                <div class="precio-badge">$1.200 c/u</div>
+                                <a href="/agregar/trufas" class="btn-agregar">+ Agregar al carrito</a>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        🍰 Las Delicias de Sarita &nbsp;|&nbsp; Dulces hechos con amor ❤️
+    </footer>
+
+    <script src="/static/bootstrap.bundle.min.js"></script>
+</body>
+</html>
