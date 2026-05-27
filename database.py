@@ -13,19 +13,20 @@ def init_db():
             telefono  TEXT NOT NULL,
             detalle   TEXT NOT NULL,
             total     INTEGER NOT NULL,
+            medio_pago TEXT NOT NULL DEFAULT 'efectivo',
             fecha     TEXT NOT NULL
         )
     """)
     conn.commit()
     conn.close()
 
-def guardar_pedido(nombre, telefono, detalle, total):
+def guardar_pedido(nombre, telefono, detalle, total, medio_pago="efectivo"):
     conn = sqlite3.connect(DB_PATH)
     c = conn.cursor()
     fecha = datetime.now().strftime("%d/%m/%Y %H:%M")
     c.execute(
-        "INSERT INTO pedidos (nombre, telefono, detalle, total, fecha) VALUES (?, ?, ?, ?, ?)",
-        (nombre, telefono, detalle, total, fecha)
+        "INSERT INTO pedidos (nombre, telefono, detalle, total, medio_pago, fecha) VALUES (?, ?, ?, ?, ?, ?)",
+        (nombre, telefono, detalle, total, medio_pago, fecha)
     )
     conn.commit()
     conn.close()
