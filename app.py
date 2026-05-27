@@ -9,9 +9,13 @@ app.secret_key = "sarita_secret_key_2024"
 MP_ACCESS_TOKEN = "APP_USR-7515760448910450-052719-3f9db43f11d2b88fd2a98061042a5a92-2665234703"
 
 PRODUCTOS = {
-    "palmeritas": {"nombre": "Palmeritas", "precio": 1000},
-    "alfajores":  {"nombre": "Alfajores",  "precio": 1100},
-    "trufas":     {"nombre": "Trufas",     "precio": 1200},
+    "palmeritas":          {"nombre": "Palmeritas",          "precio": 1000},
+    "alfajores":           {"nombre": "Alfajores",           "precio": 1100},
+    "trufas":              {"nombre": "Trufas",              "precio": 1200},
+    "tartaleta_fruta":     {"nombre": "Tartaleta de Fruta",  "precio": 3000},
+    "kuchen":              {"nombre": "Kuchen",              "precio": 4200},
+    "torta_fruta":         {"nombre": "Torta de Fruta",      "precio": 5000},
+    "tartaleta_arandanos": {"nombre": "Tartaleta de Arándanos", "precio": 4500},
 }
 
 @app.route("/")
@@ -67,7 +71,6 @@ def confirmar():
     detalle = {k: v for k, v in carrito.items() if k in PRODUCTOS}
     total   = sum(PRODUCTOS[k]["precio"] * v for k, v in detalle.items())
 
-    # Guardar datos del cliente en sesión para usarlos después
     session["datos_pedido"] = {
         "nombre": nombre,
         "telefono": telefono,
@@ -77,7 +80,6 @@ def confirmar():
     }
 
     if pago == "mercadopago":
-        # Crear preferencia en Mercado Pago
         items = []
         for key, cantidad in detalle.items():
             items.append({
@@ -115,9 +117,7 @@ def confirmar():
             return redirect(data["init_point"])
         else:
             return f"Error al crear pago: {data}", 500
-
     else:
-        # Efectivo: guardar pedido directamente
         guardar_pedido(nombre, telefono, json.dumps(detalle, ensure_ascii=False), total, "efectivo")
         session["carrito"] = {}
         session["pedido_confirmado"] = {"nombre": nombre, "total": total}
