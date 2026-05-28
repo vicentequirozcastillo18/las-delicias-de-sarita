@@ -165,3 +165,54 @@ def admin_pedidos():
 if __name__ == "__main__":
     init_db()
     app.run(debug=True)
+
+
+GEMINI_API_KEY = "AQ.Ab8RN6JKMFtUnhAYFdgESIyEyt5YqWwkhKXuWW67EM-aKZyJEw"
+
+SISTEMA_SARITA = """Eres Sarita, la asistente virtual de la pastelería "Las Delicias de Sarita". 
+Eres amable, cálida y entusiasta. Ayudas a los clientes con preguntas sobre los productos, precios, pedidos y cualquier consulta relacionada con la pastelería.
+
+Productos disponibles:
+- Palmeritas: $1.000 c/u - Crujientes y caramelizadas
+- Alfajores: $1.100 c/u - Rellenos de manjar, cubiertos de coco rallado
+- Trufas: $1.200 c/u - Intensas, cremosas y bañadas en chocolate fino
+- Tartaleta de Fruta: $3.000 c/u - Masa crocante con crema y frutas frescas
+- Kuchen: $4.200 c/u - Tradicional kuchen alemán
+- Torta de Fruta: $5.000 c/u - Esponjosa torta con crema y frutas frescas
+- Tartaleta de Arándanos: $4.500 c/u - Masa crocante con crema y arándanos frescos
+
+Para hacer un pedido, el cliente debe agregar productos al carrito y completar el formulario con su nombre y teléfono.
+Se puede pagar en efectivo o con Mercado Pago.
+Responde siempre en español, de forma breve y amigable. Usa emojis ocasionalmente."""
+
+
+@app.route("/chatbot", methods=["POST"])
+def chatbot():
+    data = request.get_json()
+    mensaje = data.get("mensaje", "").strip()
+    historial = data.get("historial", [])
+
+    if not mensaje:
+        return jsonify({"respuesta": "Por favor escribe tu pregunta 😊"})
+
+    messages = []
+    for msg in historial[-6:]:
+        messages.append({"role": msg["role"], "parts": [{"text": msg["text"]}]})
+    messages.append({"role": "user", "parts": [{"text": mensaje}]})
+
+    payload = {
+        "system_instruction": {"parts": [{"text": SISTEMA_SARITA}]},
+        "contents": messages
+    }
+
+    headers = {"Content-Type": "application/json"}
+    url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key={GEMINI_API_KEY}"
+
+    try:
+        resp = requests.post(url, json=payload, headers=headers, timeout=15)
+        result = resp.json()
+        respuesta = result["candidates"][0]["content"]["parts"][0]["text"]
+    except Exception as e:
+        respuesta = "Lo siento, tuve un problema al responder. Intenta de nuevo 😊"
+
+    return jsonify({"respuesta": respuesta})

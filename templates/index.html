@@ -376,3 +376,133 @@
     </script>
 </body>
 </html>
+<!-- CHATBOT SARITA -->
+<style>
+    #chat-btn {
+        position: fixed; bottom: 2rem; right: 2rem;
+        background: linear-gradient(135deg, var(--rojo), #e91e63);
+        color: #fff; border: none; border-radius: 50%;
+        width: 60px; height: 60px; font-size: 1.8rem;
+        box-shadow: 0 4px 20px rgba(229,57,53,0.4);
+        cursor: pointer; z-index: 1000;
+        transition: transform 0.2s;
+    }
+    #chat-btn:hover { transform: scale(1.1); }
+    #chat-box {
+        position: fixed; bottom: 6rem; right: 2rem;
+        width: 320px; background: #fff;
+        border-radius: 20px; box-shadow: 0 8px 32px rgba(229,57,53,0.2);
+        z-index: 1000; display: none; flex-direction: column;
+        overflow: hidden; border: 2px solid var(--rosa);
+    }
+    #chat-header {
+        background: linear-gradient(135deg, var(--rojo), #e91e63);
+        color: #fff; padding: 0.9rem 1.2rem;
+        font-family: 'Playfair Display', serif;
+        font-weight: 700; font-size: 1rem;
+        display: flex; justify-content: space-between; align-items: center;
+    }
+    #chat-messages {
+        height: 280px; overflow-y: auto;
+        padding: 1rem; display: flex; flex-direction: column; gap: 0.6rem;
+    }
+    .msg-sarita {
+        background: var(--rosa-claro); color: var(--texto);
+        border-radius: 16px 16px 16px 4px;
+        padding: 0.6rem 0.9rem; font-size: 0.88rem;
+        max-width: 85%; align-self: flex-start;
+    }
+    .msg-user {
+        background: linear-gradient(135deg, var(--rojo), #e91e63);
+        color: #fff; border-radius: 16px 16px 4px 16px;
+        padding: 0.6rem 0.9rem; font-size: 0.88rem;
+        max-width: 85%; align-self: flex-end;
+    }
+    #chat-input-area {
+        display: flex; padding: 0.7rem; gap: 0.5rem;
+        border-top: 1.5px solid var(--rosa-claro);
+    }
+    #chat-input {
+        flex: 1; border: 1.5px solid var(--rosa);
+        border-radius: 20px; padding: 0.4rem 0.9rem;
+        font-size: 0.88rem; outline: none;
+    }
+    #chat-send {
+        background: linear-gradient(135deg, var(--rojo), #e91e63);
+        color: #fff; border: none; border-radius: 50%;
+        width: 34px; height: 34px; font-size: 1rem; cursor: pointer;
+    }
+    .typing { color: var(--gris); font-size: 0.82rem; font-style: italic; }
+</style>
+
+<button id="chat-btn" onclick="toggleChat()">🍰</button>
+
+<div id="chat-box">
+    <div id="chat-header">
+        <span>🍰 Sarita te ayuda</span>
+        <span onclick="toggleChat()" style="cursor:pointer;font-size:1.2rem">✕</span>
+    </div>
+    <div id="chat-messages">
+        <div class="msg-sarita">¡Hola! Soy Sarita 🍰 ¿En qué te puedo ayudar hoy? Puedes preguntarme sobre nuestros productos, precios o cómo hacer un pedido 😊</div>
+    </div>
+    <div id="chat-input-area">
+        <input type="text" id="chat-input" placeholder="Escribe tu pregunta..." onkeydown="if(event.key==='Enter') enviarMensaje()">
+        <button id="chat-send" onclick="enviarMensaje()">➤</button>
+    </div>
+</div>
+
+<script>
+    let historial = [];
+    let chatAbierto = false;
+
+    function toggleChat() {
+        chatAbierto = !chatAbierto;
+        document.getElementById('chat-box').style.display = chatAbierto ? 'flex' : 'none';
+        if (chatAbierto) document.getElementById('chat-input').focus();
+    }
+
+    async function enviarMensaje() {
+        const input = document.getElementById('chat-input');
+        const mensaje = input.value.trim();
+        if (!mensaje) return;
+
+        input.value = '';
+        agregarMensaje(mensaje, 'user');
+        historial.push({ role: 'user', text: mensaje });
+
+        const typing = document.createElement('div');
+        typing.className = 'msg-sarita typing';
+        typing.id = 'typing';
+        typing.textContent = 'Sarita está escribiendo...';
+        document.getElementById('chat-messages').appendChild(typing);
+        scrollChat();
+
+        try {
+            const resp = await fetch('/chatbot', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ mensaje, historial })
+            });
+            const data = await resp.json();
+            document.getElementById('typing')?.remove();
+            agregarMensaje(data.respuesta, 'sarita');
+            historial.push({ role: 'model', text: data.respuesta });
+        } catch {
+            document.getElementById('typing')?.remove();
+            agregarMensaje('Lo siento, tuve un problema. Intenta de nuevo 😊', 'sarita');
+        }
+    }
+
+    function agregarMensaje(texto, tipo) {
+        const div = document.createElement('div');
+        div.className = tipo === 'user' ? 'msg-user' : 'msg-sarita';
+        div.textContent = texto;
+        document.getElementById('chat-messages').appendChild(div);
+        scrollChat();
+    }
+
+    function scrollChat() {
+        const msgs = document.getElementById('chat-messages');
+        msgs.scrollTop = msgs.scrollHeight;
+    }
+</script>
