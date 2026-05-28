@@ -8,7 +8,7 @@ app = Flask(__name__)
 app.secret_key = "sarita_secret_key_2024"
 
 MP_ACCESS_TOKEN = os.environ.get("MP_ACCESS_TOKEN", "")
-GEMINI_API_KEY  = os.environ.get("GEMINI_API_KEY", "")
+GROQ_API_KEY  = os.environ.get("GROQ_API_KEY", "")
 
 PRODUCTOS = {
     "palmeritas":          {"nombre": "Palmeritas",             "precio": 1000},
@@ -156,16 +156,28 @@ def chatbot():
     if not mensaje:
         return jsonify({"respuesta": "Por favor escribe tu pregunta 😊"})
 
-    messages = [{"role": m["role"], "parts": [{"text": m["text"]}]} for m in historial[-6:]]
-    messages.append({"role": "user", "parts": [{"text": mensaje}]})
+    messages = [{"role": "system", "content": SISTEMA_SARITA}]
+    for m in historial[-6:]:
+        role = "assistant" if m["role"] == "model" else "user"
+        messages.append({"role": role, "content": m["text"]})
+    messages.append({"role": "user", "content": mensaje})
 
-    payload = {"system_instruction": {"parts": [{"text": SISTEMA_SARITA}]}, "contents": messages}
-    url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-lite:generateContent?key={GEMINI_API_KEY}"
+    payload = {
+        "model": "llama-3.1-8b-instant",
+        "messages": messages,
+        "max_tokens": 300,
+        "temperature": 0.7
+    }
+
+    headers = {
+        "Authorization": f"Bearer {GROQ_API_KEY}",
+        "Content-Type": "application/json"
+    }
 
     try:
-        resp = requests.post(url, json=payload, headers={"Content-Type": "application/json"}, timeout=15)
+        resp = requests.post("https://api.groq.com/openai/v1/chat/completions", json=payload, headers=headers, timeout=15)
         result = resp.json()
-        respuesta = result["candidates"][0]["content"]["parts"][0]["text"]
+        respuesta = result["choices"][0]["message"]["content"]
     except Exception:
         respuesta = "Lo siento, tuve un problema al responder. Intenta de nuevo 😊"
 
