@@ -160,7 +160,7 @@ def chatbot():
     messages.append({"role": "user", "parts": [{"text": mensaje}]})
 
     payload = {"system_instruction": {"parts": [{"text": SISTEMA_SARITA}]}, "contents": messages}
-    url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key={GEMINI_API_KEY}"
+    url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={GEMINI_API_KEY}"
 
     try:
         resp = requests.post(url, json=payload, headers={"Content-Type": "application/json"}, timeout=15)
